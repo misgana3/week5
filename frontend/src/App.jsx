@@ -19,13 +19,13 @@ export default function App() {
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">
-              Week 5 Lab
+              Real-Time Chat
             </p>
             <h1 className="text-2xl font-semibold text-white">
-              Meridian Chat &mdash; Static Edition
+              Meridian Chat
             </h1>
             <p className="text-sm text-slate-400">
-              MERN · Clerk Authentication · Tailwind UI · REST messaging
+              MERN · Clerk Authentication · Socket.IO · Real-Time Messaging
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export default function App() {
               Welcome to Meridian Chat
             </h2>
             <p className="mt-3 text-base text-slate-400">
-              Sign in to sync your Clerk profile and explore the static REST-based chat experience before we go live with Socket.IO.
+              Sign in to start chatting with your team in real-time. Secure authentication powered by Clerk.
             </p>
             <SignInButton mode="modal">
               <Button size="lg" className="mt-6">

@@ -130,14 +130,29 @@ exports.sendMessage = asyncHandler(async (req, res) => {
 
   await conversation.save();
 
+  if (global.io) {
+    global.io.to(conversationId).emit("message:new", {
+      conversationId, 
+      message: {
+        _id: message._id,
+        conversationId: message.conversationId,
+        senderId: message.senderId,
+        senderName: message.senderName,
+        senderAvatar: message.senderAvatar,
+        text: message.text,
+        status: message.status,
+        readBy: message.readBy,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt
+      }
+    });
 
-  io.to(conversationId).emit("message:new", {
-    conversationId, message
-  });
-
-  conversation.members
-    .filter((memberId) => memberId !== currentUserId )
-    .forEach((memberId) => io.to(memberId).emit("conversation:update", { conversationId }));
+    conversation.members
+      .filter((memberId) => memberId !== currentUserId)
+      .forEach((memberId) => {
+        global.io.to(memberId).emit("conversation:update", { conversationId });
+      });
+  }
 
   res.status(201).json(message);
 });

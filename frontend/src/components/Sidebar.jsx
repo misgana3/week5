@@ -30,7 +30,7 @@ function formatTimestamp(dateLike) {
 }
 
 function lastMessagePreview(message) {
-  if (!message) return "No messages yet";
+  if (!message || !message.text) return "No messages yet";
   return message.text.length > 48 ? `${message.text.slice(0, 48)}…` : message.text;
 }
 

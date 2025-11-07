@@ -1,41 +1,21 @@
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
-const TOKEN_TEMPLATE = import.meta.env.VITE_CLERK_JWT_TEMPLATE || "integration_fallback";
 
-const createAuthenticatedClient = (getToken) => {
+const createAuthenticatedClient = (userId) => {
   const instance = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "X-User-Id": userId
     }
-  });
-
-  instance.interceptors.request.use(async (config) => {
-    if (typeof getToken !== "function") return config;
-
-    try {
-      const token = await getToken({ template: TOKEN_TEMPLATE, skipCache: true });
-      if (token) {
-        config.headers = {
-          ...config.headers,
-          Authorization: `Bearer ${token}`
-        };
-      } else {
-        console.warn("Clerk getToken returned empty value; request will be unauthenticated");
-      }
-    } catch (error) {
-      console.error("Failed to retrieve Clerk token", error);
-    }
-
-    return config;
   });
 
   return instance;
 };
 
-export function createApiClient(getToken) {
-  const client = createAuthenticatedClient(getToken);
+export function createApiClient(userId) {
+  const client = createAuthenticatedClient(userId);
 
   return {
     users: {

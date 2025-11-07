@@ -1,4 +1,3 @@
-import { useAuth } from "@clerk/clerk-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Sidebar from "./Sidebar";
 import ChatWindow from "./ChatWindow";
@@ -10,8 +9,7 @@ export default function ChatLayout({
   currentName,
   currentEmail
 }) {
-  const { getToken } = useAuth();
-  const api = useMemo(() => createApiClient(getToken), [getToken]);
+  const api = useMemo(() => createApiClient(currentUserId), [currentUserId]);
 
   const [conversations, setConversations] = useState([]);
   const [directory, setDirectory] = useState([]);
@@ -28,7 +26,6 @@ export default function ChatLayout({
       const list = await api.conversations.list();
       setConversations(Array.isArray(list) ? list : []);
     } catch (err) {
-      console.error("Failed to load conversations", err);
       setError("Unable to load conversations. Please try again.");
     } finally {
       setIsLoadingConversations(false);
@@ -40,7 +37,7 @@ export default function ChatLayout({
       const list = await api.users.list();
       setDirectory(list.filter((user) => user.clerkUserId !== currentUserId));
     } catch (err) {
-      console.error("Failed to load people", err);
+      setError("Unable to load user directory. Please refresh the page.");
     }
   }, [api, currentUserId]);
 
@@ -59,7 +56,6 @@ export default function ChatLayout({
         if (!active) return;
         await Promise.all([refreshConversations(), refreshDirectory()]);
       } catch (err) {
-        console.error("Bootstrap error", err);
         if (active) {
           setError("We couldn't prepare your chat workspace. Please refresh.");
         }
@@ -114,7 +110,7 @@ export default function ChatLayout({
           return [detail, ...prev];
         });
       } catch (err) {
-        console.error("Failed to load conversation detail", err);
+        setError("Failed to load conversation details.");
       }
     }
   }, [api, conversations]);
@@ -134,7 +130,6 @@ export default function ChatLayout({
       setActiveConversationId(conversation.id);
       setActiveConversation(conversation);
     } catch (err) {
-      console.error("Unable to start conversation", err);
       setError("Unable to start conversation. Please try again.");
     }
   }, [api]);
@@ -205,7 +200,7 @@ export default function ChatLayout({
         onConversationSeen={handleConversationSeen}
         onMessageSent={handleMessageSent}
         isBootstrapping={isBootstrapping}
-        getToken={getToken}
+        currentUserId={currentUserId}
       />
     </div>
   );

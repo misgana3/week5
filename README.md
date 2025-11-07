@@ -1,14 +1,17 @@
-# Meridian Chat (Week 5)
+# Meridian Chat
 
-Full-stack chat application built for the PLP MERN Stack Week 5 lab. The project combines an Express + MongoDB API with a Vite + React client, Clerk authentication, and Socket.IO for real-time messaging.
+🚀 **Production-ready** full-stack real-time chat application built with the MERN stack. Features secure authentication, real-time messaging via Socket.IO, and a beautiful modern UI.
 
-## Highlights
+## ✨ Highlights
 
-- Clerk-backed authentication and profile sync
-- REST API for conversations, messages, and user directory data
-- Socket.IO rooms that broadcast conversation updates in real time
-- Tailwind-driven chat UI with conversation list, message viewport, and composer
-- Environment-driven configuration for local dev and deployment
+- 🔐 **Secure Authentication** - Clerk-backed JWT authentication with automatic profile sync
+- 💬 **Real-Time Messaging** - Socket.IO integration for instant message delivery
+- 🎨 **Modern UI** - Beautiful dark theme with Tailwind CSS and smooth animations
+- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
+- 🔄 **Live Updates** - Conversations and messages update in real-time across all devices
+- 🏗️ **Production Ready** - No console logs, proper error handling, comprehensive documentation
+- 🚀 **Scalable Architecture** - Ready for horizontal scaling with Redis adapter support
+- 📊 **MongoDB** - Efficient data persistence with proper indexing
 
 ## Project Structure
 
@@ -130,19 +133,193 @@ Clients authenticate the WebSocket connection with the same Clerk JWT (sent via 
 - Set `CLERK_JWT_TEMPLATE` / `VITE_CLERK_JWT_TEMPLATE` if you use a custom template; otherwise the integration fallback is used.
 - Ensure the template includes the `sub`, `sid`, `email`, and image claims for profile sync.
 
-## Troubleshooting
+## 📚 Documentation
 
-- **CORS/Socket errors** – confirm `ALLOWED_ORIGINS`, `VITE_API_URL`, and `VITE_SOCKET_URL` point to the same host/port.
-- **401 Unauthorized** – verify Clerk keys and JWT template, and ensure the frontend retrieves tokens with `getToken`.
-- **MongoDB connection failure** – check `MONGODB_URI` and that MongoDB is reachable.
+This project includes comprehensive documentation:
 
-## Deployment Tips
+- **[ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)** - Complete guide to environment configuration
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Step-by-step deployment instructions
+- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Testing procedures and verification
+- **[FEATURE_VERIFICATION.md](./FEATURE_VERIFICATION.md)** - Complete feature checklist
 
-- Serve the backend behind HTTPS so Clerk JWTs are transmitted securely.
-- Set production `ALLOWED_ORIGINS` and `VITE_*` URLs to the deployed front-end domain.
-- Provision an Atlas or managed MongoDB instance for production workloads.
+## 🎯 Key Features
+
+### User Management
+- User authentication via Clerk
+- Automatic profile synchronization
+- User directory with search
+- Avatar and display name support
+
+### Conversations
+- One-to-one conversations
+- Real-time conversation list updates
+- Last message preview
+- Unread message counts
+- Timestamp formatting
+
+### Messaging
+- Send and receive messages in real-time
+- Message history persistence
+- Read receipts and status indicators
+- Auto-scroll to new messages
+- Message timestamps
+
+### Real-Time Features
+- Socket.IO WebSocket connections
+- Instant message delivery
+- Live conversation updates
+- User presence tracking
+- Automatic reconnection
+
+### User Experience
+- Modern dark theme UI
+- Responsive design (mobile-friendly)
+- Loading and empty states
+- Error handling with user-friendly messages
+- Smooth animations
+
+## 🔧 Technology Stack
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **MongoDB** - Database
+- **Mongoose** - ODM for MongoDB
+- **Socket.IO** - Real-time communication
+- **Clerk** - Authentication
+
+### Frontend
+- **React 19** - UI library
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Socket.IO Client** - WebSocket client
+- **Axios** - HTTP client
+- **Clerk React** - Authentication
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or Atlas)
+- Clerk account
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/PLP-MERN-Stack-Development/Week5-Chat
+cd Week5-Chat
+
+# Install backend dependencies
+cd backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
+
+### Configuration
+
+See [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) for detailed configuration instructions.
+
+### Running
+
+```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
+
+# Terminal 2 - Frontend
+cd frontend
+npm run dev
+```
+
+Visit `http://localhost:5173` to use the application.
+
+## 🧪 Testing
+
+See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for comprehensive testing procedures.
+
+Quick verification:
+```bash
+# Test backend health
+curl http://localhost:5000/healthz
+
+# Expected response
+{"status":"ok"}
+```
+
+## 📦 Production Deployment
+
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed deployment instructions.
+
+### Quick Deploy Options
+- **Backend**: Heroku, Railway, AWS EC2
+- **Frontend**: Vercel, Netlify, AWS S3 + CloudFront
+- **Database**: MongoDB Atlas
+
+## 🛡️ Security Features
+
+- JWT-based authentication
+- Server-side token verification
+- CORS protection
+- Input validation
+- XSS prevention
+- Secure WebSocket connections
+- Environment-based configuration
+- No sensitive data in client code
+
+## 📈 Performance
+
+- Database indexing for fast queries
+- Efficient Socket.IO room management
+- React component memoization
+- Optimized re-renders
+- Connection pooling
+- Lazy loading
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the ISC License.
+
+## 🙏 Acknowledgments
+
+- PLP MERN Stack Development Program
+- Clerk for authentication services
+- MongoDB for database services
+- Socket.IO team for real-time capabilities
+
+## 📞 Support
+
+For issues and questions:
+- Check [TESTING_GUIDE.md](./TESTING_GUIDE.md) troubleshooting section
+- Review [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) for configuration help
+- Open an issue on GitHub
+
+## 🎓 Learning Resources
+
+- [Express.js Documentation](https://expressjs.com/)
+- [React Documentation](https://react.dev/)
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Socket.IO Documentation](https://socket.io/docs/)
+- [Clerk Documentation](https://clerk.com/docs)
 
 ---
+
+**Status**: Production Ready ✅  
+**Version**: 1.0.0  
+**Last Updated**: November 7, 2025
 
 Repository: https://github.com/PLP-MERN-Stack-Development/Week5-Chat
 

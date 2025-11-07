@@ -20,7 +20,7 @@ export default function ChatWindow({
   onConversationSeen,
   onMessageSent,
   isBootstrapping,
-  getToken
+  currentUserId
 }) {
   const service = useMemo(() => {
     if (messagesApi) return messagesApi;
@@ -42,7 +42,7 @@ export default function ChatWindow({
   const viewportRef = useRef(null);
   const conversationIdRef = useRef(conversationId);
 
-  const socket = useSocket(getToken);
+  const socket = useSocket(currentUserId);
 
   // determine the other participant
   const otherMember = useMemo(() => {
@@ -74,7 +74,6 @@ export default function ChatWindow({
         setMessages(Array.isArray(data) ? data : []);
         onConversationSeen?.(conversationId);
       } catch (err) {
-        console.error("Failed to load messages", err);
         if (active) {
           setError("We couldn't fetch the conversation history. Please retry.");
         }
@@ -109,7 +108,12 @@ export default function ChatWindow({
     // handle incoming messages in real-time
     const handleNewMessage = ({ conversationId: id, message }) => {
       if (id === conversationIdRef.current) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          // Check if message already exists to prevent duplicates
+          const exists = prev.some(m => m._id === message._id);
+          if (exists) return prev;
+          return [...prev, message];
+        });
       }
     };
 
@@ -140,7 +144,14 @@ export default function ChatWindow({
 
     try {
       const nextMessage = await service.send(conversationId, draft.trim());
-      setMessages((prev) => [...prev, nextMessage]);
+      
+      // Check if message already exists before adding
+      setMessages((prev) => {
+        const exists = prev.some(m => m._id === nextMessage._id);
+        if (exists) return prev;
+        return [...prev, nextMessage];
+      });
+      
       onMessageSent?.(conversationId, nextMessage);
 
       // emit real-time event so others see instantly
@@ -151,7 +162,6 @@ export default function ChatWindow({
 
       setDraft("");
     } catch (err) {
-      console.error("Failed to send message", err);
       setError("Your message could not be sent. Please try again.");
     } finally {
       setIsSending(false);
@@ -227,9 +237,9 @@ export default function ChatWindow({
           </div>
         )}
 
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <MessageBubble
-            key={message._id || `${message.senderId}-${message.createdAt}`}
+            key={message._id ? `${message._id}-${index}` : `msg-${message.senderId}-${message.createdAt}-${index}`}
             message={message}
             isMine={message.senderId === currentUser.id}
             currentUser={currentUser}

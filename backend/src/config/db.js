@@ -3,9 +3,13 @@ const mongoose = require("mongoose");
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("MongoDB connected (chat)");
+    if (process.env.NODE_ENV !== "production") {
+      const timestamp = new Date().toISOString();
+      process.stdout.write(`[${timestamp}] MongoDB connected\n`);
+    }
   } catch (err) {
-    console.error("MongoDB connection error:", err.message);
+    const timestamp = new Date().toISOString();
+    process.stderr.write(`[${timestamp}] MongoDB connection failed: ${err.message}\n`);
     process.exit(1);
   }
 }

@@ -5,9 +5,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const { connectDB } = require("./config/db");
-const conversationRoutes = require("./routes/conversationRoutes");
-const messageRoutes = require("./routes/messageRoutes");
-const userRoutes = require("./routes/userRoutes");
 const { socketAuthMiddleware } = require("./middleware/socketAuth");
 
 dotenv.config();
@@ -31,6 +28,8 @@ const io = new Server(httpServer, {
   }
 });
 
+global.io = io;
+
 const userPresence = new Map();
 
 io.use(socketAuthMiddleware);
@@ -53,6 +52,10 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => res.send("Chat API OK"));
 app.get("/healthz", (req, res) => res.json({ status: "ok" }));
 
+const conversationRoutes = require("./routes/conversationRoutes");
+const messageRoutes = require("./routes/messageRoutes");
+const userRoutes = require("./routes/userRoutes");
+
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
@@ -61,7 +64,7 @@ app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
 
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
   const response = {
     message: err.message || "Internal server error"
@@ -69,7 +72,6 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   if (process.env.NODE_ENV !== "production") {
     response.stack = err.stack;
   }
-  console.error("API error:", err);
   res.status(status).json(response);
 });
 
@@ -79,8 +81,6 @@ io.on("connection", (socket) => {
     userPresence.set(userId, socket.id);
     socket.join(userId);
   }
-
-  // io.to(userId).emit("NewMessage", message)
 
   socket.on("conversation:join", (conversationId) => {
     if (conversationId) {
@@ -110,5 +110,8 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
-  console.log(`Chat API + Socket.IO are running on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV !== "production") {
+    const timestamp = new Date().toISOString();
+    process.stdout.write(`[${timestamp}] Server ready on http://localhost:${PORT}\n`);
+  }
 });
