@@ -321,5 +321,4 @@ For issues and questions:
 **Version**: 1.0.0  
 **Last Updated**: November 7, 2025
 
-Repository: https://github.com/PLP-MERN-Stack-Development/Week5-Chat
 
